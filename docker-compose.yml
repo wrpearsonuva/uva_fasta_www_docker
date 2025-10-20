@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  fasta-web:
+    build: .
+    container_name: fasta-web
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    user: root
