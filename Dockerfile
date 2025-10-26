@@ -71,6 +71,7 @@ COPY --from=fasta-build /app/bin /app/bin
 COPY --from=fasta-build /var/www /var/www
 COPY --from=fasta-build /usr/local/share/perl/5.36.0 /usr/local/share/perl/5.36.0
 COPY --from=fasta-build /usr/local/lib/${PERL_ARCH}-gnu/perl/5.36.0 /usr/local/lib/${PERL_ARCH}-gnu/perl/5.36.0
+COPY ./index.html /var/www/index.html
 
 RUN apt clean && apt update && apt install -y nano spawn-fcgi fcgiwrap wget curl perl cpanminus libexpat1-dev python3-full liblwp-protocol-https-perl default-libmysqlclient-dev ghostscript
 RUN sed -i 's/www-data/nginx/g' /etc/init.d/fcgiwrap
