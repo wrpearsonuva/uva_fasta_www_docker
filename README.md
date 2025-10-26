@@ -8,7 +8,7 @@ To build a web server that runs in a linux64 system, type:
 `docker compose build`.
 
 To build a web server that runs on a Raspberry Pi, type:
-`docker compose build --build-arg FA_ARCH=linux64_simde_arm --build-arg BL_ARCH=aarch64-linux`
+`docker compose build --build-arg FA_ARCH=linux64_simde_arm --build-arg BL_ARCH=aarch64-linux --build-arg PERL_ARCH=aarch64-linux`
 
 If things work properly, the docker compose build script will:
 
@@ -34,5 +34,7 @@ from the host machine; they are not part of the image.  Thus, after running:
    ln -s /slib2 .
 ```
 
-2. In addition, for the web scripts to work, there must be a file `/slib2/info/fast_libs_e.www` that specifies the names and locations of the sequence databases.  Ideally, this file would be defined by an enviromental variable, but right now it is defined in the `/var/www/fasta_www3/fawww_defs.pl` file.  (This needs to be fixed.)
+2. For the web scripts to work, there must be a file `/slib2/info/fast_libs_e.www` that specifies the names and locations of the sequence databases.  Ideally, this file would be defined by an enviromental variable, but right now it is defined in the `/var/www/fasta_www3/fawww_defs.pl` file.  (This needs to be fixed.)
+
+3. The fasta_www_docker web site currently uses an external MariaDB server for feature annotation. A future version will provide the MariaDB database as well.
 
