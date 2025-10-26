@@ -1,0 +1,12 @@
+services:
+  web:
+    container_name: fasta_www3
+    build:
+      context: .
+
+    volumes:
+      - ./slib2:/slib2
+      - ./log/web:/var/log/nginx/web
+
+    ports:
+      - "8080:80"

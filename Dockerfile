@@ -1,89 +1,74 @@
-# ====================================================
-# Perl + Apache + FASTA36
-# ====================================================
-FROM perl:5.38
+FROM debian:bookworm AS fasta-build
+WORKDIR /app
 
-LABEL maintainer="you@example.com"
-LABEL description="FASTA36 web server with Apache2 and mod_perl"
+## specify FASTA architecture for linux64
+ARG FA_ARCH=linux64_sse2
+## specify BLAST architecture for linux64
+ARG BL_ARCH=x64-linux
 
-# ====================================================
-# Install dependencies
-# ====================================================
-RUN apt-get update && apt-get install -y \
-        apache2 \
-        libapache2-mod-perl2 \
-        libcgi-pm-perl \
-        build-essential \
-        wget \
-        gzip \
-        tar \
-        vim \
-        curl \
-    && a2enmod cgi \
-    && a2enmod perl \
-    && rm -rf /var/lib/apt/lists/*
+## to compile (and download blast) for ARM, use
+## docker compose build --build-arg FA_ARCH=linux64_simde_arm --build-arg BL_ARCH=aarch64-linux
 
-# ====================================================
-# Download and install FASTA36
-# ====================================================
-WORKDIR /opt
 
-RUN set -eux; \
-    if wget -O fasta36.tar.gz https://fasta.bioch.virginia.edu/wrpearson/fasta/fasta36/executables/fasta36-linux64.tar.gz; then \
-        echo "✅ Using precompiled FASTA36 binary"; \
-        tar xzf fasta36.tar.gz; \
-        cp fasta36/* /usr/local/bin/; \
-        rm -rf fasta36 fasta36.tar.gz; \
-    else \
-        echo "⚙️ Building FASTA36 from source"; \
-        wget https://fasta.bioch.virginia.edu/wrpearson/fasta/fasta36/fasta-36.3.8i.tar.gz; \
-        tar xzf fasta-36.3.8i.tar.gz; \
-        cd fasta-36.3.8i/src; \
-        make -f ../make/Makefile.linux64_sse2 all; \
-        cp ../bin/* /usr/local/bin/; \
-        cd /opt; \
-        rm -rf fasta-36.3.8i*; \
-    fi
+RUN apt update && \
+    apt install -y build-essential perl git curl nano cpanminus libexpat1-dev liblwp-protocol-https-perl default-libmysqlclient-dev && \
+    rm -rf /var/lib/apt/lists/*
 
-# ====================================================
-# Apache configuration for CGI
-# ====================================================
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf && \
-    mkdir -p /usr/lib/cgi-bin && \
-    mkdir -p /var/www/html && \
-    chown -R www-data:www-data /usr/lib/cgi-bin /var/www/html && \
-    chmod -R 755 /usr/lib/cgi-bin
+RUN mkdir /app/bin
 
-# Create a simple default index page (for testing)
-RUN echo "<h2>FASTA36 Web Server Running</h2>" > /var/www/html/index.html
+## build fasta binaries
+RUN git clone https://github.com/wrpearson/fasta36.git /app/fa_src
 
-# ====================================================
-# Copy your CGI script(s)
-# ====================================================
-COPY app.pl /usr/lib/cgi-bin/app.pl
-RUN chmod +x /usr/lib/cgi-bin/app.pl
+RUN cd /app/fa_src/src && \
+    make -f ../make/Makefile.${FA_ARCH} all && \
+    cp ../bin/* /app/bin && \
+    cp ../scripts/* /app/bin && \
+    cp ../psisearch2/* /app/bin
 
-# ====================================================
-# Apache site configuration
-# ====================================================
-RUN echo "\
-<VirtualHost *:80>\n\
-    ServerAdmin webmaster@localhost\n\
-    ServerName localhost\n\
-    DocumentRoot /var/www/html\n\
-    ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/\n\
-    <Directory /usr/lib/cgi-bin>\n\
-        AllowOverride None\n\
-        Options +ExecCGI\n\
-        AddHandler cgi-script .pl\n\
-        Require all granted\n\
-    </Directory>\n\
-    ErrorLog /var/log/apache2/error.log\n\
-    CustomLog /var/log/apache2/access.log combined\n\
-</VirtualHost>\n" > /etc/apache2/sites-available/000-default.conf
+## install NCBI blast binaries
 
-# ====================================================
-# Expose and run Apache
-# ====================================================
-EXPOSE 80
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+RUN mkdir /app/src && \
+    cd /app/src && \
+    curl -O ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.17.0/ncbi-blast-2.17.0+-${BL_ARCH}.tar.gz && \
+    tar zxf ncbi-blast-2.17.0+-aarch64-linux.tar.gz && \
+    cp ncbi-blast-2.17.0+/bin/* /app/bin
+
+## build fasta_www3 and cpan files
+
+## get fasta_www3
+RUN mkdir /var/www && cd /var/www && \
+    git clone https://github.com/wrpearson/fasta_www3.git /var/www/fasta_www3
+
+## build/install perl modules
+RUN mkdir /app/cpan && \
+    cp /var/www/fasta_www3/cpan_list /var/www/fasta_www3/cpan_list_fail /app/cpan && \
+    cd /app/cpan && \
+    for n in `cat cpan_list`; do cpanm $n; done && \
+    for n in `cat cpan_list_fail`; do cpanm --force $n; done
+
+## define these environment variables to run stand-along fasta
+## ENV SLIB2=/slib2 
+## ENV RDLIB2=/slib2
+## ENV FASTLIBS=/slib2/info/fast_libs_e.www
+
+## now install the web stuff, mostly using volume mapping
+
+FROM nginx:bookworm
+WORKDIR /app
+COPY --from=fasta-build /app/bin /app/bin
+COPY --from=fasta-build /var/www /var/www
+COPY --from=fasta-build /usr/local/share/perl/5.36.0 /usr/local/share/perl/5.36.0
+COPY --from=fasta-build /usr/local/lib/aarch64-linux-gnu/perl/5.36.0 /usr/local/lib/aarch64-linux-gnu/perl/5.36.0
+
+RUN apt clean && apt update && apt install -y nano spawn-fcgi fcgiwrap wget curl perl cpanminus libexpat1-dev python3-full liblwp-protocol-https-perl default-libmysqlclient-dev ghostscript
+RUN sed -i 's/www-data/nginx/g' /etc/init.d/fcgiwrap
+RUN chown nginx:nginx /etc/init.d/fcgiwrap
+RUN mkdir /var/tmp/www /var/tmp/www/logs /var/tmp/www/files && \
+    chown nginx:nginx /var/tmp/www/logs /var/tmp/www/files
+COPY ./vhost.conf /etc/nginx/conf.d/default.conf
+
+## install fasta_www3 website code 
+
+CMD /etc/init.d/fcgiwrap start \
+    && nginx -g 'daemon off;'
+
