@@ -30,7 +30,7 @@ RUN cd /app/fa_src/src && \
 RUN mkdir /app/src && \
     cd /app/src && \
     curl -O ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.17.0/ncbi-blast-2.17.0+-${BL_ARCH}.tar.gz && \
-    tar zxf ncbi-blast-2.17.0+-aarch64-linux.tar.gz && \
+    tar zxf ncbi-blast-2.17.0+-${BL_ARCH}.tar.gz && \
     cp ncbi-blast-2.17.0+/bin/* /app/bin
 
 ## build fasta_www3 and cpan files
