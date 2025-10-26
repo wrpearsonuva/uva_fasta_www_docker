@@ -26,3 +26,13 @@ If things work properly, the docker compose build script will:
 
 7. start the `nginx` web server
 
+In this version of the docker image, the sequence databases are linked
+from the host machine; they are not part of the image.  Thus, after running:
+
+1.   `git clone https://github.com/wrpearson/fasta_www_docker.git fasta_www_docker`, you must
+```cd fasta_www_docker
+   ln -s /slib2 .
+```
+
+2. In addition, for the web scripts to work, there must be a file `/slib2/info/fast_libs_e.www` that specifies the names and locations of the sequence databases.  Ideally, this file would be defined by an enviromental variable, but right now it is defined in the `/var/www/fasta_www3/fawww_defs.pl` file.  (This needs to be fixed.)
+
