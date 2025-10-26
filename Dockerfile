@@ -31,7 +31,7 @@ RUN cd /app/fa36_src/src && \
 RUN git clone https://github.com/wrpearson/fasta2.git /app/fa20_src
 
 RUN cd /app/fa20_src && \
-    make -f makefile.unx grease psgrease chofas garnier && \
+    make -f Makefile grease psgrease chofas garnier && \
     cp  grease psgrease chofas garnier /app/bin
 
 ## install NCBI blast binaries
