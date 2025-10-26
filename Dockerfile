@@ -11,21 +11,28 @@ ARG PERL_ARCH=x86_64-linux
 ## to compile (and download blast) for ARM, use
 ## docker compose build --build-arg FA_ARCH=linux64_simde_arm --build-arg BL_ARCH=aarch64-linux
 
-
 RUN apt update && \
     apt install -y build-essential perl git curl nano cpanminus libexpat1-dev liblwp-protocol-https-perl default-libmysqlclient-dev && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /app/bin
 
-## build fasta binaries
-RUN git clone https://github.com/wrpearson/fasta36.git /app/fa_src
+## build fasta36  binaries
+RUN git clone https://github.com/wrpearson/fasta36.git /app/fa36_src
 
-RUN cd /app/fa_src/src && \
+RUN cd /app/fa36_src/src && \
     make -f ../make/Makefile.${FA_ARCH} all && \
     cp ../bin/* /app/bin && \
     cp ../scripts/* /app/bin && \
     cp ../psisearch2/* /app/bin
+
+## install fasta20 chofas garnier grease psgrease
+
+RUN git clone https://github.com/wrpearson/fasta2.git /app/fa20_src
+
+RUN cd /app/fa20_src && \
+    make -f makefile.unx grease psgrease chofas garnier && \
+    cp  grease psgrease chofas garnier /app/bin
 
 ## install NCBI blast binaries
 
