@@ -5,6 +5,8 @@ WORKDIR /app
 ARG FA_ARCH=linux64_sse2
 ## specify BLAST architecture for linux64
 ARG BL_ARCH=x64-linux
+## specify PERL architecture for linux64
+ARG PERL_ARCH=x86_64-linux
 
 ## to compile (and download blast) for ARM, use
 ## docker compose build --build-arg FA_ARCH=linux64_simde_arm --build-arg BL_ARCH=aarch64-linux
@@ -30,7 +32,7 @@ RUN cd /app/fa_src/src && \
 RUN mkdir /app/src && \
     cd /app/src && \
     curl -O ftp://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.17.0/ncbi-blast-2.17.0+-${BL_ARCH}.tar.gz && \
-    tar zxf ncbi-blast-2.17.0+-aarch64-linux.tar.gz && \
+    tar zxf ncbi-blast-2.17.0+-${BL_ARCH}.tar.gz && \
     cp ncbi-blast-2.17.0+/bin/* /app/bin
 
 ## build fasta_www3 and cpan files
@@ -46,6 +48,8 @@ RUN mkdir /app/cpan && \
     for n in `cat cpan_list`; do cpanm $n; done && \
     for n in `cat cpan_list_fail`; do cpanm --force $n; done
 
+RUN echo `perldoc -l DBI`
+
 ## define these environment variables to run stand-along fasta
 ## ENV SLIB2=/slib2 
 ## ENV RDLIB2=/slib2
@@ -54,17 +58,25 @@ RUN mkdir /app/cpan && \
 ## now install the web stuff, mostly using volume mapping
 
 FROM nginx:bookworm
+
+## specify FASTA architecture for linux64
+ARG FA_ARCH=linux64_sse2
+## specify BLAST architecture for linux64
+ARG BL_ARCH=x64-linux
+ARG PERL_ARCH=x86_64-linux
+
+
 WORKDIR /app
 COPY --from=fasta-build /app/bin /app/bin
 COPY --from=fasta-build /var/www /var/www
 COPY --from=fasta-build /usr/local/share/perl/5.36.0 /usr/local/share/perl/5.36.0
-COPY --from=fasta-build /usr/local/lib/aarch64-linux-gnu/perl/5.36.0 /usr/local/lib/aarch64-linux-gnu/perl/5.36.0
+COPY --from=fasta-build /usr/local/lib/${PERL_ARCH}-gnu/perl/5.36.0 /usr/local/lib/${PERL_ARCH}-gnu/perl/5.36.0
 
 RUN apt clean && apt update && apt install -y nano spawn-fcgi fcgiwrap wget curl perl cpanminus libexpat1-dev python3-full liblwp-protocol-https-perl default-libmysqlclient-dev ghostscript
 RUN sed -i 's/www-data/nginx/g' /etc/init.d/fcgiwrap
 RUN chown nginx:nginx /etc/init.d/fcgiwrap
 RUN mkdir /var/tmp/www /var/tmp/www/logs /var/tmp/www/files && \
-    chown nginx:nginx /var/tmp/www/logs /var/tmp/www/files
+    chown -R nginx:nginx /var/tmp/www
 COPY ./vhost.conf /etc/nginx/conf.d/default.conf
 
 ## install fasta_www3 website code 
