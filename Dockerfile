@@ -87,7 +87,9 @@ RUN mkdir /var/tmp/www /var/tmp/www/logs /var/tmp/www/files && \
     chown -R nginx:nginx /var/tmp/www
 COPY ./vhost.conf /etc/nginx/conf.d/default.conf
 
-## install fasta_www3 website code 
+RUN ln -s /app /seqprg
+
+## start fasta_www3 website
 
 CMD /etc/init.d/fcgiwrap start \
     && nginx -g 'daemon off;'
