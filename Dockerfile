@@ -15,7 +15,7 @@ RUN apt update && \
     apt install -y build-essential perl git curl nano cpanminus libexpat1-dev liblwp-protocol-https-perl default-libmysqlclient-dev && \
     rm -rf /var/lib/apt/lists/*
 
-RUN mkdir /app/bin
+RUN mkdir /app/bin /app/data
 
 ## build fasta36  binaries
 RUN git clone https://github.com/wrpearson/fasta36.git /app/fa36_src
