@@ -42,6 +42,12 @@ RUN mkdir /app/src && \
     tar zxf ncbi-blast-2.17.0+-${BL_ARCH}.tar.gz && \
     cp ncbi-blast-2.17.0+/bin/* /app/bin
 
+## install NCBI datatool binary (this does not work for RPI ARM)
+RUN cd /app/src && \
+    curl -O ftp://ftp.ncbi.nlm.nih.gov/toolbox/ncbi_tools++/BIN/CURRENT/datatool/datatool.Linux64.tar.gz && \
+    tar zxf datatool.Linux64.tar.gz  && \
+    cp datatool.Linux64/bin/datatool /app/bin
+    
 ## build fasta_www3 and cpan files
 
 ## get fasta_www3
