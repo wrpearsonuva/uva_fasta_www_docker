@@ -24,7 +24,8 @@ RUN cd /app/fa36_src/src && \
     make -f ../make/Makefile.${FA_ARCH} all && \
     cp ../bin/* /app/bin && \
     cp ../scripts/* /app/bin && \
-    cp ../psisearch2/* /app/bin
+    cp ../psisearch2/* /app/bin && \
+    cp ../psisearch2/NCBI_all.asn /app/data
 
 ## install fasta20 chofas garnier grease psgrease
 
@@ -44,9 +45,9 @@ RUN mkdir /app/src && \
 
 ## install NCBI datatool binary (this does not work for RPI ARM)
 RUN cd /app/src && \
-    curl -O ftp://ftp.ncbi.nlm.nih.gov/toolbox/ncbi_tools++/BIN/CURRENT/datatool/datatool.Linux64.tar.gz && \
-    tar zxf datatool.Linux64.tar.gz  && \
-    cp datatool.Linux64/bin/datatool /app/bin
+    curl -O ftp://ftp.ncbi.nlm.nih.gov/toolbox/ncbi_tools++/BIN/CURRENT/datatool/datatool.Ubuntu64.tar.gz && \
+    tar zxf datatool.Ubuntu64.tar.gz  && \
+    cp datatool.Ubuntu64/bin/datatool /app/bin
     
 ## build fasta_www3 and cpan files
 
@@ -81,6 +82,7 @@ ARG PERL_ARCH=x86_64-linux
 
 WORKDIR /app
 COPY --from=fasta-build /app/bin /app/bin
+COPY --from=fasta-build /app/data /app/data
 COPY --from=fasta-build /var/www /var/www
 COPY --from=fasta-build /usr/local/share/perl/5.36.0 /usr/local/share/perl/5.36.0
 COPY --from=fasta-build /usr/local/lib/${PERL_ARCH}-gnu/perl/5.36.0 /usr/local/lib/${PERL_ARCH}-gnu/perl/5.36.0
