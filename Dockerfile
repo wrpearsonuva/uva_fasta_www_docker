@@ -43,12 +43,34 @@ RUN mkdir /app/src && \
     tar zxf ncbi-blast-2.17.0+-${BL_ARCH}.tar.gz && \
     cp ncbi-blast-2.17.0+/bin/* /app/bin
 
+## get blastpgp and fastacmd from old version:
+
+RUN cd /app/src && \
+    curl -O ftp://ftp.ncbi.nlm.nih.gov/blast/executables/legacy.NOTSUPPORTED/2.2.26/blast-2.2.26-x64-linux.tar.gz && \
+    tar zxf blast-2.2.26-x64-linux.tar.gz && \
+    cp blast-2.2.26/bin/blastpgp blast-2.2.26/bin/fastacmd /app/bin && \
+    cp blast-2.2.26/data/* /app/data
+
 ## install NCBI datatool binary (this does not work for RPI ARM)
 RUN cd /app/src && \
     curl -O ftp://ftp.ncbi.nlm.nih.gov/toolbox/ncbi_tools++/BIN/CURRENT/datatool/datatool.Ubuntu64.tar.gz && \
     tar zxf datatool.Ubuntu64.tar.gz  && \
     cp datatool.Ubuntu64/bin/datatool /app/bin
     
+## install clustalw2.1
+RUN cd /app/src && \
+    curl -O http://www.clustal.org/download/2.1/clustalw-2.1-linux-x86_64-libcppstatic.tar.gz && \
+    tar zxf clustalw-2.1-linux-x86_64-libcppstatic.tar.gz && \
+    cp clustalw-2.1-linux-x86_64-libcppstatic/clustalw2 /app/bin/clustalw
+
+## install hmmer3
+RUN cd /app/src && \
+    curl -O http://eddylab.org/software/hmmer/hmmer-3.4.tar.gz && \
+    tar zxf hmmer-3.4.tar.gz  && \
+    cd hmmer-3.4 && \
+    ./configure && make && make DESTDIR=/app install && \
+    cp /app/usr/local/bin/* /app/bin
+
 ## build fasta_www3 and cpan files
 
 ## get fasta_www3
