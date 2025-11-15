@@ -2,7 +2,7 @@ replicaCount: 1
 image:
   repository: ghcr.io/wrpearsonuva/fasta
   pullPolicy: Always
-  tag: 0.1.0
+  tag: prod-0.0.8
 imagePullSecrets:
   - name: "ghcr-regcred"
 nameOverride: ""
@@ -23,7 +23,6 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 80
-
 resources:
   limits:
     cpu: 2
