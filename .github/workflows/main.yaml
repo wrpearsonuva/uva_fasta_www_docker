@@ -24,12 +24,12 @@ jobs:
         run: |
           echo "BUILD_PROJ=uva_fasta_www_docker" >> $GITHUB_ENV
 
-      - name: Get Tag Version
-        run: |
-          IMAGE_TAG=${GITHUB_REF#refs/tags/}
-          echo "IMAGE_TAG: ${IMAGE_TAG}"
-          yq eval ".image.tag = \"${IMAGE_TAG}\"" -i kubernetes/prod/values.yaml
-          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+#      - name: Get Tag Version
+#        run: |
+#          IMAGE_TAG=${GITHUB_REF#refs/tags/}
+#          echo "IMAGE_TAG: ${IMAGE_TAG}"
+#          yq eval ".image.tag = \"${IMAGE_TAG}\"" -i kubernetes/prod/values.yaml
+#          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
