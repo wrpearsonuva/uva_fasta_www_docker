@@ -18,7 +18,7 @@ RUN apt update && \
 RUN mkdir /app/bin /app/data
 
 ## build fasta36  binaries
-RUN git clone https://github.com/wrpearson/fasta36.git /app/fa36_src
+RUN git clone --depth 1 https://github.com/wrpearson/fasta36.git /app/fa36_src
 
 RUN cd /app/fa36_src/src && \
     make -f ../make/Makefile.${FA_ARCH} all && \
@@ -29,7 +29,7 @@ RUN cd /app/fa36_src/src && \
 
 ## install fasta20 chofas garnier grease psgrease
 
-RUN git clone https://github.com/wrpearson/fasta2.git /app/fa20_src
+RUN git clone --depth 1 https://github.com/wrpearson/fasta2.git /app/fa20_src
 
 RUN cd /app/fa20_src && \
     make -f Makefile grease psgrease chofas garnier && \
@@ -75,7 +75,7 @@ RUN cd /app/src && \
 
 ## get fasta_www3
 RUN mkdir /var/www && cd /var/www && \
-    git clone https://github.com/wrpearson/fasta_www3.git /var/www/fasta_www3
+    git clone --depth 1 https://github.com/wrpearson/fasta_www3.git /var/www/fasta_www3
 
 ## build/install perl modules
 RUN mkdir /app/cpan && \
