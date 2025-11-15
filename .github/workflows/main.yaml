@@ -54,7 +54,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
             ghcr.io/wrpearsonuva/${{ env.BUILD_PROJ }}:latest
-            ghcr.io/wrpearsonuva/${{ env.BUILD_PROJ }}:${{ env.IMAGE_TAG }}
+#            ghcr.io/wrpearsonuva/${{ env.BUILD_PROJ }}:${{ env.IMAGE_TAG }}
 
 
 #      - name: Push Version to Repository
