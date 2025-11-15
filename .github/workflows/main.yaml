@@ -22,7 +22,7 @@ jobs:
 
       - name: Set environment variables
         run: |
-          echo "BUILD_PROJ=uva-fasta" >> $GITHUB_ENV
+          echo "BUILD_PROJ=fasta" >> $GITHUB_ENV
 
       - name: Get Tag Version
         run: |
