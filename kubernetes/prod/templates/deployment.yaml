@@ -42,15 +42,15 @@ spec:
           volumeMounts:
             - name: fasta-slib2-pvc
               mountPath: /slib2
-            - name: fasta-weblog-pvc
-              mountPath: /var/log/nginx/web
+#            - name: fasta-weblog-pvc
+#              mountPath: /var/log/nginx/web
       volumes:
         - name: fasta-slib2-pvc
           persistentVolumeClaim:
             claimName: fasta-slib2-pvc
-        - name: fasta-weblog-pvc
-          persistentVolumeClaim:
-            claimName: fasta-weblog-pvc
+#        - name: fasta-weblog-pvc
+#          persistentVolumeClaim:
+#            claimName: fasta-weblog-pvc
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
