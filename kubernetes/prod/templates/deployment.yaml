@@ -49,9 +49,9 @@ spec:
           persistentVolumeClaim:
             claimName: fasta-slib2-pvc
         - name: fasta-weblog-pvc
-          emptyDir: {}
-#          persistentVolumeClaim:
-#            claimName: fasta-weblog-pvc
+#          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: fasta-weblog-pvc
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
