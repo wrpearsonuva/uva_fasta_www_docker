@@ -42,7 +42,7 @@ spec:
           volumeMounts:
             - name: fasta-slib2-pvc
               mountPath: /slib2
-              readOnly: true
+#              readOnly: true
             - name: fasta-weblog-pvc
               mountPath: /var/log/nginx/web
       volumes:
