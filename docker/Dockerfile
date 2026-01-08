@@ -117,7 +117,10 @@ RUN mkdir /var/tmp/www /var/tmp/www/logs /var/tmp/www/files && \
     chown -R nginx:nginx /var/tmp/www
 COPY ../vhost.conf /etc/nginx/conf.d/default.conf
 
-RUN ln -s /app /seqprg
+RUN ln -s /app /seqprg && \
+    ln -s /var/www/fasta_www3 /var/www/fasta_www2 && \
+    ln -s /var/www/fasta_www3/fasta_redirect /var/www/fasta 
+##    for n in wrpearson mol_evol biol4230 cshl papers egmt1520 ; do ln -s /var/www/uva_th/$n /var/www/$n; done
 
 ## start fasta_www3 website
 
