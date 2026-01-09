@@ -1,34 +1,43 @@
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  name: fasta-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.org/websocket-services: "fasta"
-    acme.cert-manager.io/http01-edit-in-place: "true"
-    cert-manager.io/cluster-issuer: letsencrypt-cluster-issuer
     nginx.org/proxy-connect-timeout: "600s"
     nginx.org/proxy-read-timeout: "600s"
     nginx.org/proxy-send-timeout: "600s"
-  name: fasta-ingress
 spec:
   rules:
     - host: fasta.pods.uvarc.io
       http:
         paths:
-          - pathType: Prefix
-            path: "/"
+          - path: /
+            pathType: Prefix
             backend:
               service:
                 name: fasta
                 port:
                   number: 80
+
+    - host: cmkb.bioch.virginia.edu
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fasta
+                port:
+                  number: 80
+
   tls:
     - hosts:
         - fasta.pods.uvarc.io
       secretName: fasta-nginx-tls-ingress-secret
 
-
-
-
+    - hosts:
+        - cmkb.bioch.virginia.edu
+      secretName: cmkb-bioch-tls-ingress-secret
