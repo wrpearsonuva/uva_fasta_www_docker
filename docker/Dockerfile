@@ -59,7 +59,7 @@ RUN cd /app/src && \
     
 ## install clustalw2.1
 RUN cd /app/src && \
-    curl -O http://www.clustal.org/download/2.1/clustalw-2.1-linux-x86_64-libcppstatic.tar.gz && \
+    curl -O https://ftp.ebi.ac.uk/pub/software/clustalw2/2.1/clustalw-2.1-linux-x86_64-libcppstatic.tar.gz && \
     tar zxf clustalw-2.1-linux-x86_64-libcppstatic.tar.gz && \
     cp clustalw-2.1-linux-x86_64-libcppstatic/clustalw2 /app/bin/clustalw
 
