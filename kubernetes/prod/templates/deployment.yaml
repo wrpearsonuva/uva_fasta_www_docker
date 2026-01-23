@@ -9,6 +9,7 @@ spec:
   selector:
     matchLabels:
       {{- include "fasta.selectorLabels" . | nindent 6 }}
+
   template:
     metadata:
       annotations:
@@ -20,49 +21,73 @@ spec:
           {{- with .Values.podLabels }}
           {{- toYaml . | nindent 8 }}
           {{- end }}
+
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ## 🔹 DATABASE ENV VARS
+          env:
+            - name: DB_NAME
+              value: "pfam37_qfo"
+            - name: DB_HOST
+              value: "fasta-mariadb-db"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: "root"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fasta-mariadb-db
+                  key: root-password
+
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
           volumeMounts:
             - name: fasta-slib2-pvc
               mountPath: /slib2
-#              readOnly: true
             - name: fasta-weblog-pvc
               mountPath: /var/log/nginx/web
+
       volumes:
         - name: fasta-slib2-pvc
           persistentVolumeClaim:
             claimName: fasta-slib2-pvc
         - name: fasta-weblog-pvc
-#          emptyDir: {}
           persistentVolumeClaim:
             claimName: fasta-weblog-pvc
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+
       {{- with .Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-
