@@ -44,6 +44,17 @@ spec:
                 port:
                   number: 80
 
+    - host: fasta.bioch.virginia.edu
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: fasta
+                port:
+                  number: 80
+
   tls:
     - hosts:
         - fasta.pods.uvarc.io
@@ -56,3 +67,7 @@ spec:
     - hosts:
         - fastademo.bioch.virginia.edu
       secretName: fastademo-bioch-tls-ingress-secret
+
+    - hosts:
+        - fasta.bioch.virginia.edu
+      secretName: fasta-bioch-tls-ingress-secret
