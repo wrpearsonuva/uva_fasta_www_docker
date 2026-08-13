@@ -1,3 +1,7 @@
+13-Aug-2026
+
+release: prod-0.0.14  to load fasta_www3:prod-0.0.1
+
 25-Oct-2025
 
 This git repository contains Docker files that can be used to build a
