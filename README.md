@@ -1,6 +1,7 @@
 13-Aug-2026
 
 release: prod-0.0.14  to load fasta_www3:prod-0.0.1
+release: prod-0.0.15  to load libdw1.so for NCBI/datatool
 
 25-Oct-2025
 
