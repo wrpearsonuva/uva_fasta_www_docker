@@ -1,6 +1,6 @@
 26-Aug-2026
 
-release: prod-0.0.18  to load latest fasta_www3_rel-0.1.2
+release: prod-0.0.19  to load latest fasta_www3_rel-0.1.3
 
 22-Aug-2026
 
