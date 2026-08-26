@@ -1,10 +1,14 @@
+26-Aug-2026
+
+release: prod-0.0.18  to load latest fasta_www3_rel-0.1.2
+
 22-Aug-2026
 
-release: prot-0.0.17  to load latest fasta_www3
+release: prod-0.0.17  to load latest fasta_www3
 
 16-Aug-2026
 
-release: prot-0.0.16  to load fasta_www3-rel-0.1.1 (remove '`', add README.md)
+release: prod-0.0.16  to load fasta_www3-rel-0.1.1 (remove '`', add README.md)
 
 13-Aug-2026
 
