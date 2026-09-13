@@ -1,3 +1,6 @@
+13-Sep-2026
+release: prod-0.0.25  to load latest fasta_www3_rel-0.1.8
+
 30-Aug-2026
 release: prod-0.0.24  to load latest fasta_www3_rel-0.1.7
 
@@ -12,17 +15,13 @@ release: prod-0.0.20  to load latest fasta_www3_rel-0.1.4
 release: prod-0.0.19  to load latest fasta_www3_rel-0.1.3
 
 22-Aug-2026
-
 release: prod-0.0.17  to load latest fasta_www3
 
 16-Aug-2026
-
 release: prod-0.0.16  to load fasta_www3-rel-0.1.1 (remove '`', add README.md)
 
 13-Aug-2026
-
 release: prod-0.0.15  to load libdw1.so for NCBI/datatool
-
 release: prod-0.0.14  to load fasta_www3_rel-0.1.0
 
 25-Oct-2025
