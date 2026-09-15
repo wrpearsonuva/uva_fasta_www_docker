@@ -1,3 +1,6 @@
+15-Sep-2026
+release: prod-0.0.26  fix DB_ env variables, load latest fasta_www3_rel-0.1.9
+
 13-Sep-2026
 release: prod-0.0.25  to load latest fasta_www3_rel-0.1.8
 

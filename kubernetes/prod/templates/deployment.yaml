@@ -41,7 +41,7 @@ spec:
 
           ## 🔹 DATABASE ENV VARS
           env:
-            - name: DB_NAME
+            - name: DB_PFAM_QFO_NAME
               value: "pfam37_qfo"
             - name: DB_HOST
               value: "fasta-mariadb-db"
