@@ -1,4 +1,4 @@
-FROM debian:bookworm AS fasta-build
+FROM debian:trixie AS fasta-build
 WORKDIR /app
 
 ## specify FASTA architecture for linux64
@@ -93,7 +93,7 @@ RUN echo `perldoc -l DBI`
 
 ## now install the web stuff, mostly using volume mapping
 
-FROM nginx:bookworm
+FROM nginx:stable-trixie
 
 ## specify FASTA architecture for linux64
 ARG FA_ARCH=linux64_sse2
@@ -106,8 +106,8 @@ WORKDIR /app
 COPY --from=fasta-build /app/bin /app/bin
 COPY --from=fasta-build /app/data /app/data
 COPY --from=fasta-build /var/www /var/www
-COPY --from=fasta-build /usr/local/share/perl/5.36.0 /usr/local/share/perl/5.36.0
-COPY --from=fasta-build /usr/local/lib/${PERL_ARCH}-gnu/perl/5.36.0 /usr/local/lib/${PERL_ARCH}-gnu/perl/5.36.0
+COPY --from=fasta-build /usr/local/share/perl/5.40.1 /usr/local/share/perl/5.40.1
+
 COPY ../index.html /var/www/index.html
 
 RUN apt clean && apt update && apt install -y nano spawn-fcgi fcgiwrap wget curl perl cpanminus libexpat1-dev python3-full liblwp-protocol-https-perl default-libmysqlclient-dev ghostscript libgomp1 python3-jinja2 libdw1

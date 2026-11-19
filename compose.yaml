@@ -2,7 +2,7 @@ services:
   web:
     container_name: fasta_www3
     build:
-      context: docker/Dockerfile
+      context: docker/Dockerfile_apt
 
     volumes:
       - ./slib2:/slib2
